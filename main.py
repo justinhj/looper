@@ -34,11 +34,10 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
     )
     response = llm.invoke([message])
     svg_code = response.content
+
     print("--- LLM Response for initial SVG ---")
     print(svg_code)
     print("------------------------------------")
-
-    return
 
     with open("initial_drawing.svg", "w") as f:
         f.write(svg_code)
