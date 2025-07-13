@@ -76,17 +76,16 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
         }
 
         new_response = llm.invoke([HumanMessage(content=[text_message, image_message])])
-        
+
         # The response will likely contain the identification and the SVG code.
         # We will extract the SVG part for the next iteration.
         response_content = new_response.content
-        
 
         # A simple way to extract the SVG code block
         try:
             svg_code = response_content[response_content.find('<svg'):response_content.rfind('</svg>') + 6]
         except (TypeError, ValueError) as e:
-            print(f"Error extracting SVG in iteration {i+1}: {e}")
+            print(f"Error extracting SVG in iteration {i + 1}: {e}")
             print("Full response from LLM:", response_content)
             break
 
