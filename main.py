@@ -50,7 +50,6 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
     cairosvg.svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_filename)
     print(f"✅ PNG saved as {png_filename}")
 
-
     # 3. Start the iterative process
     for i in range(iterations):
         print(f"\n--- Iteration {i + 1} of {iterations} ---")
@@ -82,6 +81,7 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
         # We will extract the SVG part for the next iteration.
         response_content = new_response.content
         
+
         # A simple way to extract the SVG code block
         try:
             svg_code = response_content[response_content.find('<svg'):response_content.rfind('</svg>') + 6]
