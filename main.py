@@ -39,17 +39,25 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
     print(svg_code)
     print("------------------------------------")
 
-    with open("initial_drawing.svg", "w") as f:
+    svg_filename = "initial_drawing.svg"
+    with open(svg_filename, "w") as f:
         f.write(svg_code)
-    print("✅ Initial SVG saved as initial_drawing.svg")
+    print(f"✅ Initial SVG saved as {svg_filename}")
+
+    # Render and save the corresponding PNG
+    png_filename = os.path.splitext(svg_filename)[0] + ".png"
+    print("🖼️ Rendering SVG to image...")
+    cairosvg.svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_filename)
+    print(f"✅ PNG saved as {png_filename}")
+
 
     # 3. Start the iterative process
     for i in range(iterations):
         print(f"\n--- Iteration {i + 1} of {iterations} ---")
 
-        # a. Render the SVG to a PNG image in memory
-        print("🖼️ Rendering SVG to image...")
-        png_output = cairosvg.svg2png(bytestring=svg_code.encode('utf-8'))
+        # a. Read the last generated PNG to be fed to the LLM
+        with open(png_filename, "rb") as f:
+            png_output = f.read()
         image = Image.open(io.BytesIO(png_output))
 
         # b. Prepare the image for the LLM
@@ -83,14 +91,20 @@ def iterative_svg_generator(initial_prompt: str, iterations: int):
             break
 
         # d. Save the new SVG
-        output_filename = f"iteration_{i + 1}_drawing.svg"
-        with open(output_filename, "w") as f:
+        svg_filename = f"iteration_{i + 1}_drawing.svg"
+        with open(svg_filename, "w") as f:
             f.write(svg_code)
-        print(f"✅ New SVG saved as {output_filename}")
+        print(f"✅ New SVG saved as {svg_filename}")
+
+        # Render and save the corresponding PNG
+        png_filename = os.path.splitext(svg_filename)[0] + ".png"
+        print("🖼️ Rendering SVG to image...")
+        cairosvg.svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_filename)
+        print(f"✅ PNG saved as {png_filename}")
 
 
 if __name__ == "__main__":
-    start_prompt = "A smiling sun over a green hill"
+    start_prompt = "A picture of a pelican riding a bicyle"
     num_iterations = 3
     iterative_svg_generator(start_prompt, num_iterations)
     print("\n🎉 Process complete.")
